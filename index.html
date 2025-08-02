@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>UselessBot 3000</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: black;
+      font-family: 'Consolas', monospace;
+      color: lime;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    #chat-container {
+      width: 600px;
+      background-color: #111;
+      padding: 20px;
+      border: 2px solid lime;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 0 15px lime;
+    }
+
+    #chat-box {
+      height: 400px;
+      width: 100%;
+      overflow-y: auto;
+      padding: 10px;
+      border: 1px solid lime;
+      margin-bottom: 10px;
+      background-color: black;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 20px;
+      text-align: center;
+      color: lime;
+      scroll-behavior: smooth;
+    }
+
+    #chat-box .user-message {
+      align-self: flex-end;
+      background-color: #004d00;
+      color: lime;
+      padding: 10px 15px;
+      border-radius: 12px 12px 0 12px;
+      max-width: 80%;
+      animation: fadeIn 0.3s ease-in-out;
+      text-align: left;
+    }
+
+    #chat-box .bot-message {
+      align-self: flex-start;
+      background-color: #002200;
+      color: #00ff88;
+      padding: 10px 15px;
+      border-radius: 12px 12px 12px 0;
+      max-width: 80%;
+      animation: fadeIn 0.3s ease-in-out;
+      text-align: left;
+    }
+
+    #user-input {
+      width: 100%;
+      padding: 12px;
+      background-color: black;
+      color: white;
+      border: 1px solid lime;
+      font-size: 20px;
+      font-family: 'Consolas', monospace;
+      text-align: center;
+      outline: none;
+    }
+
+    #user-input:focus {
+      box-shadow: 0 0 10px lime;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="chat-container">
+    <div id="chat-box"></div>
+    <input type="text" id="user-input" placeholder="Type your question..." autofocus />
+  </div>
+
+  <script>
+    const responses = [
+      "Interesting... but have you tried turning it off and on again?",
+      "I'm not saying it's aliens... but it's aliens. 👽",
+      "As a highly advanced AI, I choose not to answer that. 🤖",
+      "Did you just ask me something? I wasn't paying attention. 😴",
+      "That's a great question for someone else. 🧠",
+      "My neural circuits are tangled. Try again later. ⚡",
+      "Let me Google that for you... wait, nevermind. 🕵️‍♂️",
+      "I'm 99% sure that answer is classified. 🔒",
+      "Sorry, I'm on a break. Try yelling at your toaster instead. 🍞",
+      "What even *is* reality, really? 🌌"
+    ];
+
+    const chatBox = document.getElementById("chat-box");
+    const userInput = document.getElementById("user-input");
+
+    function createMessage(content, className) {
+      const msg = document.createElement("div");
+      msg.className = className;
+      msg.textContent = content;
+      chatBox.appendChild(msg);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function botTypingEffect(callback) {
+      const typingMsg = document.createElement("div");
+      typingMsg.className = "bot-message";
+      typingMsg.textContent = "UselessBot is typing...";
+      chatBox.appendChild(typingMsg);
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      setTimeout(() => {
+        chatBox.removeChild(typingMsg);
+        callback();
+      }, 800);
+    }
+
+    function generateReply(input) {
+      if (["exit", "quit", "bye"].includes(input.toLowerCase())) {
+        botTypingEffect(() => createMessage("Goodbye. I'm going back to doing nothing.", "bot-message"));
+        setTimeout(() => {
+          userInput.disabled = true;
+          userInput.placeholder = "Session ended.";
+        }, 1500);
+      } else if (input.endsWith("?")) {
+        const reply = responses[Math.floor(Math.random() * responses.length)];
+        botTypingEffect(() => createMessage("UselessBot: " + reply, "bot-message"));
+      } else {
+        botTypingEffect(() => createMessage("UselessBot: ...I only respond to *questions*. Try adding a '?'", "bot-message"));
+      }
+    }
+
+    function handleInput(event) {
+      if (event.key === "Enter") {
+        const input = userInput.value.trim();
+        if (!input) return;
+
+        createMessage("You: " + input, "user-message");
+        userInput.value = "";
+        generateReply(input);
+      }
+    }
+
+    // Initialize bot
+    createMessage("🤖 UselessBot  is online. Ask me... or don’t.", "bot-message");
+    userInput.addEventListener("keydown", handleInput);
+  </script>
+</body>
+</html>
